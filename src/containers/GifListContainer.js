@@ -5,20 +5,37 @@ import GifSearch from '../components/GifSearch'
 
 class GifListContainer extends Component {
     state = {
-        gifs: []
+        gifs: null
     }
 
-    handleSubmit = (event) => {
-        event.preventDefault()
-        console.log(event)
-        //fetch('https://api.giphy.com/v1/gifs/search?q=' + '' + '&api_key=2CQvLfbbBjCKNmPYVKgTPgE5vPO0KKof&rating=g')
+    fetchGifs = (query) => {
+        console.log(query)
+        fetch('https://api.giphy.com/v1/gifs/search?q=' + query + '&api_key=2CQvLfbbBjCKNmPYVKgTPgE5vPO0KKof&rating=g')
+        .then(res => res.json())
+        .then(res => {
+            console.log(res)
+            this.setState({
+                gifs: res.data
+            })
+            console.log(this.state.gifs[1].images.original.url)
+        })
+        
+
+    }
+
+    renderCheck = () => {
+        if (this.state.gifs === null) {
+            return <ul></ul>
+        } else {
+            return <GifList gifs={this.state.gifs}/>
+        }
     }
 
     render() {
         return(
             <div>
-                {/* <GifList /> */}
-                <GifSearch theSubmit={this.handleSubmit}/> 
+                {this.renderCheck()}
+                <GifSearch getGifs={this.fetchGifs}/> 
             </div>
         )
     }
